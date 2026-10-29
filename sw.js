@@ -1,10 +1,10 @@
-// Service worker Kalkulator Tunggak Semi
+// Service worker Calculator Babi Ngepet V1
 // Strategi: network-first untuk semua file inti, cache hanya dipakai
 // sebagai cadangan saat offline. Ini membuat halaman otomatis memakai
 // versi kode terbaru setiap kali online, tanpa perlu menaikkan versi
 // cache secara manual.
 
-const CACHE_NAME = 'tunggaksemi-calc-v3';
+const CACHE_NAME = 'babi-ngepet-calc-v1';
 const CORE_ASSETS = [
   './',
   './index.html',

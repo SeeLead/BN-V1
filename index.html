@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kalkulator Grid Martingale — Tunggak Semi</title>
-<meta name="description" content="Hitung drawdown dan profit sampai posisi ke-x untuk EA grid/martingale Tunggak Semi.">
+<title>Calculator Babi Ngepet V1</title>
+<meta name="description" content="Hitung drawdown dan profit sampai posisi ke-x untuk EA grid/martingale Babi Ngepet.">
 <meta name="theme-color" content="#12161C">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAqElEQVR42u3aMQ6CMBQGYDAewDA4ubhyKmZXzuHKzKlYvYJHcGXh1ZialvC99SehXx7Naxra7npr9lynZucFAAAAAAAAAAAAUK7OBd+9PO9bUT++au9AsPpkag8AAAAAAPxvEmeZr8U6kGu+2gMAAAAAAHkn8TRctqLH/K69A8Hqk6lPCAAAAAAAAAAA4OCA+MS/TuO7t3X6/ZNxtX76AwAAAAAAAPi9Pt25HA1CGUodAAAAAElFTkSuQmCC">
@@ -219,7 +219,7 @@
 <header>
   <div class="brand">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAqElEQVR42u3aMQ6CMBQGYDAewDA4ubhyKmZXzuHKzKlYvYJHcGXh1ZialvC99SehXx7Naxra7npr9lynZucFAAAAAAAAAAAAUK7OBd+9PO9bUT++au9AsPpkag8AAAAAAPxvEmeZr8U6kGu+2gMAAAAAAHkn8TRctqLH/K69A8Hqk6lPCAAAAAAAAAAA4OCA+MS/TuO7t3X6/ZNxtX76AwAAAAAAAPi9Pt25HA1CGUodAAAAAElFTkSuQmCC" alt="">
-    <h1>Kalkulator Grid Martingale — Tunggak Semi</h1>
+    <h1>Calculator Babi Ngepet V1</h1>
   </div>
   <p>Menghitung lot, floating loss (drawdown), dan estimasi profit basket sampai posisi ke-x, berdasarkan cara kerja EA: lot bertambah dengan pengali di setiap level, jarak antar level tetap dalam pips, TP dihitung dari harga rata-rata.</p>
 </header>
@@ -474,13 +474,13 @@
       Object.keys(els).forEach(k => {
         state[k] = els[k].type === 'checkbox' ? els[k].checked : els[k].value;
       });
-      localStorage.setItem('tunggaksemi-calc-state', JSON.stringify(state));
+      localStorage.setItem('babi-ngepet-calc-state', JSON.stringify(state));
     }catch(e){}
   }
 
   function loadState(){
     try{
-      const raw = localStorage.getItem('tunggaksemi-calc-state');
+      const raw = localStorage.getItem('babi-ngepet-calc-state');
       if(!raw) return;
       const state = JSON.parse(raw);
       Object.keys(els).forEach(k => {

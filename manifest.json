@@ -1,7 +1,7 @@
 {
-  "name": "Kalkulator Grid Martingale — Tunggak Semi",
-  "short_name": "Tunggak Semi Calc",
-  "description": "Kalkulator drawdown dan profit basket untuk EA grid/martingale Tunggak Semi.",
+  "name": "Calculator Babi Ngepet V1",
+  "short_name": "Babi Ngepet V1",
+  "description": "Kalkulator drawdown dan profit basket untuk EA grid/martingale Babi Ngepet.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
