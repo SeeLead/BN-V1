@@ -76,7 +76,7 @@ button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;backgroun
 <div><label for="dir">Arah</label><select id="dir"><option value="buy">BUY</option><option value="sell">SELL</option></select></div>
 <div><label for="vstep">Volume step broker</label><input id="vstep" type="number" inputmode="decimal" step="0.01" min="0.01" value="0.01"></div>
 </div>
-<p class="note">Rumus lot &amp; jarak mengikuti EA Tunggak Semi: level ke-n berjarak (n-1) × jarak averaging dari posisi pertama.</p>
+<p class="note">Rumus lot &amp; jarak mengikuti EA Babi Ngepet V2 (TP 1 posisi tunggal = 900 pips): level ke-n berjarak (n-1) × jarak averaging dari posisi pertama.</p>
 </div>
 
 <div class="card">
@@ -108,6 +108,7 @@ button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;backgroun
 <script>
 const $=id=>document.getElementById(id);
 const IDS=['x','lot0','mult','grp','maxlot','step','tp','dir','vstep','price','bal','lev','so'];
+const SINGLE_TP=900; // EA: TP basket saat hanya 1 posisi = 900 pips
 const CONTRACT=100; // 1 lot XAUUSD = 100 oz
 const fmt=(n,d=2)=>n.toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
 const num=(id,def=0)=>{const v=parseFloat($(id).value);return isFinite(v)?v:def};
@@ -115,7 +116,7 @@ const num=(id,def=0)=>{const v=parseFloat($(id).value);return isFinite(v)?v:def}
 // Meniru BuildLotSequence() & GetLotSize() pada EA
 function lotSeq(lot0,mult,vs){
   mult=Math.max(mult,1.01);
-  const r=v=>Math.round(v/vs)*vs, first=r(lot0), seq=[first,first];
+  const r=v=>Math.round(v/vs)*vs, first=r(lot0), seq=[first];
   let raw=lot0;
   for(let k=0;k<2000&&seq.length<150;k++){
     const v=r(raw);
@@ -141,8 +142,9 @@ function calc(p,x){
     ddLot=P*sumL-sumLd; // sum L_j*(P-d_j)
     out.push({i,L,sumL,dd:ddLot*pv,avg:sumLd/sumL,P});
   }
-  const last=out[x-1],profit=last.sumL*p.tp*pv;
-  return {seq,lotAt,pv,out,last,profit,rebound:(last.P-last.avg)+p.tp};
+  const tpE=n=>n===1?SINGLE_TP:p.tp;
+  const last=out[x-1],profit=last.sumL*tpE(x)*pv;
+  return {seq,lotAt,pv,out,last,profit,tpE,rebound:(last.P-last.avg)+tpE(x)};
 }
 function read(){
   return {lot0:num('lot0',.01),mult:num('mult',1.2),grp:Math.max(1,Math.floor(num('grp',30))),maxlot:num('maxlot'),
@@ -161,6 +163,7 @@ function render(){
     ['Jarak dari posisi pertama',fmt(L.P,0)+' pips ('+fmt(L.P*p.pipsize)+' harga)'],
     ['Average price (dari anchor)',fmt(L.avg,1)+' pips ('+fmt(L.avg*p.pipsize)+' harga)'],
     ['Rebound dibutuhkan ke TP',fmt(R.rebound,1)+' pips ('+fmt(R.rebound*p.pipsize)+' harga)'],
+    ['TP basket',fmt(R.tpE(x),0)+' pips'+(x===1?' (posisi tunggal)':'')],
     ['Profit : Drawdown',L.dd>0?'1 : '+fmt(L.dd/R.profit):'-']
   ];
   const ddN=L.dd+L.sumL*p.step*R.pv;
@@ -168,7 +171,7 @@ function render(){
     ['Rebound ke TP dari titik itu',fmt(R.rebound+p.step,1)+' pips']);
   const price=num('price',NaN);
   if(isFinite(price)&&price>0){
-    const px=price+sgn*L.P*p.pipsize,avgP=price+sgn*L.avg*p.pipsize,tpP=avgP-sgn*p.tp*p.pipsize;
+    const px=price+sgn*L.P*p.pipsize,avgP=price+sgn*L.avg*p.pipsize,tpP=avgP-sgn*R.tpE(x)*p.pipsize;
     rows.push(['Harga saat posisi ke-'+x+' terisi',fmt(px)],['Harga sesaat sebelum posisi ke-'+(x+1),fmt(px+sgn*p.step*p.pipsize)],['Average price',fmt(avgP)],['Harga TP basket',fmt(tpP)]);
     const lev=num('lev',0),bal=num('bal',NaN);
     if(lev>0){
@@ -191,7 +194,7 @@ function render(){
     h+='<details'+(isCur?' open':'')+'><summary><b>Grup '+(k+1)+'</b><span>Posisi '+a+'–'+e+'</span><span>'+fmt(R.lotAt(a))+' lot/posisi</span><span>DD akhir grup: <em>-'+fmt(eo.dd)+'</em></span></summary><div class="scroll"><table><tr><th>Posisi</th><th>Lot</th><th>Jarak (pips)</th>'+(hasP?'<th>Harga</th>':'')+'<th>Total lot</th><th>Drawdown</th><th>Profit TP</th></tr>';
     for(let i=a;i<=e;i++){
       const o=R.out[i-1];
-      h+='<tr'+(i===x?' class="cur"':'')+'><td>'+i+'</td><td>'+fmt(o.L)+'</td><td>'+fmt(o.P,0)+'</td>'+(hasP?'<td>'+fmt(price+sgn*o.P*p.pipsize)+'</td>':'')+'<td>'+fmt(o.sumL)+'</td><td>-'+fmt(o.dd)+'</td><td>+'+fmt(o.sumL*p.tp*R.pv)+'</td></tr>';
+      h+='<tr'+(i===x?' class="cur"':'')+'><td>'+i+'</td><td>'+fmt(o.L)+'</td><td>'+fmt(o.P,0)+'</td>'+(hasP?'<td>'+fmt(price+sgn*o.P*p.pipsize)+'</td>':'')+'<td>'+fmt(o.sumL)+'</td><td>-'+fmt(o.dd)+'</td><td>+'+fmt(o.sumL*R.tpE(i)*R.pv)+'</td></tr>';
     }
     h+='</table></div></details>';
   }
