@@ -1,6 +1,6 @@
-# Calculator Babi Ngepet V2
+# Babi Ngepet
 
-Kalkulator untuk menghitung **drawdown floating di posisi ke-x** dan **profit bila TP basket** pada strategi averaging XAUUSD (logika mengikuti EA Babi Ngepet V2).
+Kalkulator untuk menghitung **drawdown floating di posisi ke-x** dan **profit bila TP basket** pada strategi averaging XAUUSD (logika mengikuti EA Babi Ngepet).
 
 - 1 pip XAUUSD = 0,01 harga (sesuai EA)
 - 1 lot = 100 oz, jadi 1 pip per 1 lot = 1 USD

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Calculator Babi Ngepet V2</title>
+<title>Babi Ngepet</title>
 <meta name="description" content="Kalkulator drawdown & profit TP basket untuk strategi averaging XAUUSD.">
 <meta name="theme-color" content="#0f141c">
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Babi Ngepet V2">
+<meta name="apple-mobile-web-app-title" content="Babi Ngepet">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{--bg:#f4f5f7;--card:#fff;--text:#1a1f2b;--mute:#667085;--line:#e3e6eb;--gold:#c99700;--red:#d92d20;--green:#12805c;--inp:#fff}
@@ -55,7 +55,7 @@ button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;backgroun
 </head>
 <body>
 <div class="wrap">
-<header><img src="icons/icon-192.png" alt=""><div><h1>Calculator Babi Ngepet V2</h1><p>XAUUSD · Drawdown &amp; profit TP basket (1 pip = 0,01)</p></div></header>
+<header><img src="icons/icon-192.png" alt=""><div><h1>Babi Ngepet</h1><p>XAUUSD · Drawdown &amp; profit TP basket (1 pip = 0,01)</p></div></header>
 
 <div class="card">
 <h2>Jumlah posisi terbuka</h2>
@@ -76,7 +76,7 @@ button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;backgroun
 <div><label for="dir">Arah</label><select id="dir"><option value="buy">BUY</option><option value="sell">SELL</option></select></div>
 <div><label for="vstep">Volume step broker</label><input id="vstep" type="number" inputmode="decimal" step="0.01" min="0.01" value="0.01"></div>
 </div>
-<p class="note">Rumus lot &amp; jarak mengikuti EA Babi Ngepet V2 (TP 1 posisi tunggal = 900 pips): level ke-n berjarak (n-1) × jarak averaging dari posisi pertama.</p>
+<p class="note">Rumus lot &amp; jarak mengikuti EA Babi Ngepet: level ke-n berjarak (n-1) × jarak averaging dari posisi pertama.</p>
 </div>
 
 <div class="card">
@@ -108,7 +108,6 @@ button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;backgroun
 <script>
 const $=id=>document.getElementById(id);
 const IDS=['x','lot0','mult','grp','maxlot','step','tp','dir','vstep','price','bal','lev','so'];
-const SINGLE_TP=900; // EA: TP basket saat hanya 1 posisi = 900 pips
 const CONTRACT=100; // 1 lot XAUUSD = 100 oz
 const fmt=(n,d=2)=>n.toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
 const num=(id,def=0)=>{const v=parseFloat($(id).value);return isFinite(v)?v:def};
@@ -142,7 +141,7 @@ function calc(p,x){
     ddLot=P*sumL-sumLd; // sum L_j*(P-d_j)
     out.push({i,L,sumL,dd:ddLot*pv,avg:sumLd/sumL,P});
   }
-  const tpE=n=>n===1?SINGLE_TP:p.tp;
+  const tpE=n=>p.tp;
   const last=out[x-1],profit=last.sumL*tpE(x)*pv;
   return {seq,lotAt,pv,out,last,profit,tpE,rebound:(last.P-last.avg)+tpE(x)};
 }
@@ -163,7 +162,6 @@ function render(){
     ['Jarak dari posisi pertama',fmt(L.P,0)+' pips ('+fmt(L.P*p.pipsize)+' harga)'],
     ['Average price (dari anchor)',fmt(L.avg,1)+' pips ('+fmt(L.avg*p.pipsize)+' harga)'],
     ['Rebound dibutuhkan ke TP',fmt(R.rebound,1)+' pips ('+fmt(R.rebound*p.pipsize)+' harga)'],
-    ['TP basket',fmt(R.tpE(x),0)+' pips'+(x===1?' (posisi tunggal)':'')],
     ['Profit : Drawdown',L.dd>0?'1 : '+fmt(L.dd/R.profit):'-']
   ];
   const ddN=L.dd+L.sumL*p.step*R.pv;

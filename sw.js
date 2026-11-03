@@ -1,4 +1,4 @@
-const CACHE = 'babi-ngepet-v2b';
+const CACHE = 'babi-ngepet-v3';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'favicon.ico',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-192.png',
   'icons/maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png'];

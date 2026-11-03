@@ -1,6 +1,6 @@
 {
-  "name": "Calculator Babi Ngepet V2",
-  "short_name": "Babi Ngepet V2",
+  "name": "Babi Ngepet",
+  "short_name": "Babi Ngepet",
   "description": "Kalkulator drawdown & profit TP basket XAUUSD",
   "start_url": "./index.html",
   "scope": "./",
