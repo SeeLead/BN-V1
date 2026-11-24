@@ -1,211 +1,586 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Babi Ngepet</title>
-<meta name="description" content="Kalkulator drawdown & profit TP basket untuk strategi averaging XAUUSD.">
-<meta name="theme-color" content="#0f141c">
-<link rel="icon" href="favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Babi Ngepet">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Calculator Babi Ngepet V1</title>
+<meta name="description" content="Hitung drawdown dan profit sampai posisi ke-x untuk EA grid/martingale Babi Ngepet.">
+<meta name="theme-color" content="#12161C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAqElEQVR42u3aMQ6CMBQGYDAewDA4ubhyKmZXzuHKzKlYvYJHcGXh1ZialvC99SehXx7Naxra7npr9lynZucFAAAAAAAAAAAAUK7OBd+9PO9bUT++au9AsPpkag8AAAAAAPxvEmeZr8U6kGu+2gMAAAAAAHkn8TRctqLH/K69A8Hqk6lPCAAAAAAAAAAA4OCA+MS/TuO7t3X6/ZNxtX76AwAAAAAAAPi9Pt25HA1CGUodAAAAAElFTkSuQmCC">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
 <style>
-:root{--bg:#f4f5f7;--card:#fff;--text:#1a1f2b;--mute:#667085;--line:#e3e6eb;--gold:#c99700;--red:#d92d20;--green:#12805c;--inp:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#0f141c;--card:#171e29;--text:#e8ebf0;--mute:#8b95a5;--line:#263040;--gold:#f0b90b;--red:#ff6b64;--green:#3ddc97;--inp:#0f141c}}
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-.wrap{max-width:720px;margin:0 auto;padding:16px}
-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-header img{width:44px;height:44px;border-radius:10px}
-h1{font-size:19px;margin:0}header p{margin:0;color:var(--mute);font-size:13px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
-.card h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin:0 0 10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label{display:block;font-size:12px;color:var(--mute);margin-bottom:3px}
-input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--inp);color:var(--text);font:inherit}
-input:focus,select:focus{outline:2px solid var(--gold);border-color:transparent}
-.full{grid-column:1/-1}
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.box{border:1px solid var(--line);border-radius:12px;padding:12px}
-.box small{color:var(--mute);display:block;font-size:12px}
-.box b{font-size:21px;display:block;margin-top:2px;word-break:break-word}
-.dd b{color:var(--red)}.pf b{color:var(--green)}
-.rows div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--line)}
-.rows div:last-child{border:0}.rows span{color:var(--mute)}.rows strong{text-align:right}
-.warn{color:var(--red)}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th:first-child,td:first-child{text-align:left}th{color:var(--mute);font-weight:600}
-tr.cur td{background:rgba(240,185,11,.14);font-weight:700}
-.scroll{overflow-x:auto}
-details{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;overflow:hidden}
-summary{cursor:pointer;padding:10px 12px;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;list-style:none}
-summary::-webkit-details-marker{display:none}
-summary::before{content:"▸";color:var(--gold)}details[open]>summary::before{content:"▾"}
-summary b{min-width:92px}summary span{color:var(--mute);font-size:12px}summary em{font-style:normal;color:var(--red);font-weight:600}
-.note{font-size:12px;color:var(--mute);margin:8px 0 0}
-button{padding:9px 14px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--text);font:inherit;cursor:pointer}
+  :root{
+    --bg:#0F1319;
+    --panel:#171C24;
+    --panel-2:#1D232D;
+    --line:#2A313D;
+    --text:#E7EAEE;
+    --muted:#8A93A1;
+    --amber:#E8A33D;
+    --amber-dim:#A8762C;
+    --green:#3ED598;
+    --red:#FF6B6B;
+    --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+  header{
+    padding:28px 20px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  header .brand{
+    display:flex;align-items:center;gap:12px;
+  }
+  header .brand img{width:34px;height:34px;border-radius:9px;}
+  header h1{
+    font-size:1.15rem;
+    margin:0;
+    letter-spacing:.2px;
+    font-weight:650;
+  }
+  header p{
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:.86rem;
+    max-width:620px;
+    line-height:1.5;
+  }
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:22px 16px 0;
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:20px;
+  }
+  @media (max-width:820px){
+    main{grid-template-columns:1fr;}
+  }
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+  }
+  .panel h2{
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--muted);
+    margin:0 0 14px;
+    font-weight:650;
+  }
+  .field{margin-bottom:14px;}
+  .field label{
+    display:block;
+    font-size:.82rem;
+    color:var(--text);
+    margin-bottom:5px;
+  }
+  .field .hint{
+    display:block;
+    font-size:.72rem;
+    color:var(--muted);
+    margin-top:4px;
+    line-height:1.4;
+  }
+  .field input[type=number]{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:9px 10px;
+    border-radius:9px;
+    font-family:var(--mono);
+    font-size:.92rem;
+  }
+  .field input[type=number]:focus{
+    outline:none;
+    border-color:var(--amber);
+  }
+  .checkrow{
+    display:flex;align-items:center;gap:9px;
+    margin-bottom:14px;
+  }
+  .checkrow input{width:16px;height:16px;accent-color:var(--amber);}
+  .checkrow label{font-size:.84rem;}
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:10px;
+    margin-bottom:18px;
+  }
+  @media (max-width:560px){
+    .summary{grid-template-columns:1fr 1fr;}
+  }
+  .stat{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+  }
+  .stat .k{
+    font-size:.72rem;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .stat .v{
+    font-family:var(--mono);
+    font-size:1.28rem;
+    font-weight:650;
+  }
+  .stat .v.red{color:var(--red);}
+  .stat .v.green{color:var(--green);}
+  .stat .v.amber{color:var(--amber);}
+  .stat .sub{
+    font-size:.72rem;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-family:var(--mono);
+    font-size:.82rem;
+  }
+  thead th{
+    text-align:right;
+    color:var(--muted);
+    font-weight:600;
+    font-size:.68rem;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  thead th:first-child, tbody td:first-child{text-align:left;}
+  tbody td{
+    text-align:right;
+    padding:8px 10px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  tbody tr:last-child td{
+    background:rgba(232,163,61,.08);
+    font-weight:650;
+  }
+  tbody td.red{color:var(--red);}
+  tbody td.green{color:var(--green);}
+  tbody td.amber{color:var(--amber);}
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:14px;
+  }
+  .table-wrap table{min-width:1280px;}
+  .table-wrap .panel-pad{padding:16px 16px 4px;}
+  footer{
+    max-width:1080px;
+    margin:24px auto 0;
+    padding:0 16px;
+    color:var(--muted);
+    font-size:.72rem;
+    line-height:1.6;
+  }
+  .install-tip{
+    background:var(--panel-2);
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:.76rem;
+    color:var(--muted);
+    margin-top:16px;
+    display:none;
+  }
+  .install-tip.show{display:block;}
+  .install-tip button{
+    background:var(--amber);
+    color:#1a1200;
+    border:none;
+    padding:6px 12px;
+    border-radius:7px;
+    font-weight:650;
+    font-size:.76rem;
+    cursor:pointer;
+    margin-top:8px;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-<header><img src="icons/icon-192.png" alt=""><div><h1>Babi Ngepet</h1><p>XAUUSD · Drawdown &amp; profit TP basket (1 pip = 0,01)</p></div></header>
 
-<div class="card">
-<h2>Jumlah posisi terbuka</h2>
-<div class="grid">
-<div class="full"><label for="x">Saat ada berapa posisi terbuka?</label><input id="x" type="number" inputmode="numeric" min="1" max="4500" value="100"></div>
-</div>
-</div>
+<header>
+  <div class="brand">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAqElEQVR42u3aMQ6CMBQGYDAewDA4ubhyKmZXzuHKzKlYvYJHcGXh1ZialvC99SehXx7Naxra7npr9lynZucFAAAAAAAAAAAAUK7OBd+9PO9bUT++au9AsPpkag8AAAAAAPxvEmeZr8U6kGu+2gMAAAAAAHkn8TRctqLH/K69A8Hqk6lPCAAAAAAAAAAA4OCA+MS/TuO7t3X6/ZNxtX76AwAAAAAAAPi9Pt25HA1CGUodAAAAAElFTkSuQmCC" alt="">
+    <h1>Calculator Babi Ngepet V1</h1>
+  </div>
+  <p>Menghitung lot, floating loss (drawdown), dan estimasi profit basket sampai posisi ke-x, berdasarkan cara kerja EA: lot bertambah dengan pengali di setiap level, jarak antar level tetap dalam pips, TP dihitung dari harga rata-rata.</p>
+</header>
 
-<div class="card">
-<h2>Pengaturan EA</h2>
-<div class="grid">
-<div><label for="lot0">Initial lot</label><input id="lot0" type="number" inputmode="decimal" step="0.01" min="0.01" value="0.01"></div>
-<div><label for="mult">Lot multiplier</label><input id="mult" type="number" inputmode="decimal" step="0.01" min="1.01" value="1.2"></div>
-<div><label for="grp">Posisi per grup lot</label><input id="grp" type="number" inputmode="numeric" min="1" value="30"></div>
-<div><label for="maxlot">Max lot per order (0 = bebas)</label><input id="maxlot" type="number" inputmode="decimal" step="0.01" min="0" value="0"></div>
-<div><label for="step">Jarak averaging (pips)</label><input id="step" type="number" inputmode="decimal" min="0.1" value="30"></div>
-<div><label for="tp">Take profit basket (pips)</label><input id="tp" type="number" inputmode="decimal" min="0" value="100"></div>
-<div><label for="dir">Arah</label><select id="dir"><option value="buy">BUY</option><option value="sell">SELL</option></select></div>
-<div><label for="vstep">Volume step broker</label><input id="vstep" type="number" inputmode="decimal" step="0.01" min="0.01" value="0.01"></div>
-</div>
-<p class="note">Rumus lot &amp; jarak mengikuti EA Babi Ngepet: level ke-n berjarak (n-1) × jarak averaging dari posisi pertama.</p>
-</div>
+<main>
+  <section class="panel">
+    <h2>Parameter Lot &amp; Risiko</h2>
 
-<div class="card">
-<h2>Opsional: harga, balance &amp; margin</h2>
-<div class="grid">
-<div><label for="price">Harga entry pertama</label><input id="price" type="number" inputmode="decimal" step="0.01" placeholder="mis. 4000.00"></div>
-<div><label for="bal">Balance (USC)</label><input id="bal" type="number" inputmode="decimal" placeholder="mis. 1000"></div>
-<div><label for="lev">Leverage (1:x)</label><input id="lev" type="number" inputmode="numeric" value="500"></div>
-<div><label for="so">Stop out level (%)</label><input id="so" type="number" inputmode="decimal" value="50"></div>
-</div>
-</div>
+    <div class="field">
+      <label for="initialLot">Lot Awal</label>
+      <input type="number" id="initialLot" value="0.01" step="0.01" min="0.01">
+    </div>
 
-<div class="card">
-<h2>Hasil saat <span id="xl">30</span> posisi terbuka</h2>
-<div class="hero">
-<div class="box dd"><small>Drawdown (posisi ke-x baru terisi)</small><b id="r-dd">-</b></div>
-<div class="box pf"><small>Profit bila TP basket</small><b id="r-pf">-</b></div>
-</div>
-<div class="rows" style="margin-top:8px" id="rows"></div>
-</div>
+    <div class="checkrow">
+      <input type="checkbox" id="enableMultiplier" checked>
+      <label for="enableMultiplier">Aktifkan pengali lot (martingale)</label>
+    </div>
 
-<div class="card">
-<h2>Breakdown per posisi (buka per grup)</h2>
-<div id="bd"></div>
-<p class="note">Drawdown dihitung saat posisi tersebut baru terisi (harga tepat di levelnya); profit TP = total lot × TP pips. Tanpa spread, swap, dan komisi.</p>
-</div>
-</div>
+    <div class="field">
+      <label for="lotMultiplier">Pengali Lot</label>
+      <input type="number" id="lotMultiplier" value="1.2" step="0.01" min="0.01">
+      <span class="hint">Lot level ke-n = Lot Awal × Pengali^(n-1)</span>
+    </div>
+
+    <div class="field">
+      <label for="maxLotLimit">Batas Maksimal Lot</label>
+      <input type="number" id="maxLotLimit" value="0" step="0.01" min="0">
+      <span class="hint">0 = tanpa batas</span>
+    </div>
+
+    <h2 style="margin-top:22px;">Harga &amp; Arah Posisi</h2>
+
+    <div class="field">
+      <label for="direction">Arah Posisi</label>
+      <select id="direction">
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+      </select>
+      <span class="hint">Buy: posisi berikutnya dibuka lebih rendah. Sell: posisi berikutnya dibuka lebih tinggi.</span>
+    </div>
+
+    <div class="field">
+      <label for="anchorPrice">Harga Perolehan Posisi Pertama</label>
+      <input type="number" id="anchorPrice" value="" step="0.01" placeholder="mis. 2350.50">
+    </div>
+
+    <div class="field">
+      <label for="pipSize">Ukuran 1 Pip</label>
+      <input type="number" id="pipSize" value="0.01" step="0.01">
+      <span class="hint">Default 0.01 untuk XAUUSD. Ubah jika broker Anda memakai definisi pip yang berbeda.</span>
+    </div>
+
+    <h2 style="margin-top:22px;">Jarak &amp; Take Profit</h2>
+
+    <div class="field">
+      <label for="stepPips">Jarak Antar Posisi (pips)</label>
+      <input type="number" id="stepPips" value="200" step="1" min="1">
+    </div>
+
+    <div class="field">
+      <label for="tpPips">Take Profit (pips dari harga rata-rata)</label>
+      <input type="number" id="tpPips" value="200" step="1" min="0">
+    </div>
+
+    <div class="field">
+      <label for="pipValue">Nilai per Pip untuk 1.0 Lot (USD)</label>
+      <input type="number" id="pipValue" value="1" step="0.01" min="0.01">
+      <span class="hint">Cek spesifikasi kontrak di broker Anda untuk pair/instrumen ini. Contoh umum: forex mayor ±$10, XAUUSD tergantung definisi pip broker.</span>
+    </div>
+
+    <h2 style="margin-top:22px;">Margin &amp; Leverage</h2>
+
+    <div class="field">
+      <label for="leverage">Leverage (1 : x)</label>
+      <input type="number" id="leverage" value="500" step="1" min="1">
+      <span class="hint">Contoh: isi 500 untuk leverage 1:500.</span>
+    </div>
+
+    <div class="field">
+      <label for="contractSize">Ukuran Kontrak per 1.0 Lot</label>
+      <input type="number" id="contractSize" value="100" step="1" min="1">
+      <span class="hint">XAUUSD umumnya 100 oz per 1 lot. Cek spesifikasi kontrak di broker Anda.</span>
+    </div>
+
+    <div class="field">
+      <label for="marginLevelMin">Batas Margin Level (%)</label>
+      <input type="number" id="marginLevelMin" value="100" step="1" min="0">
+      <span class="hint">Modal minimum dihitung agar margin level tidak turun di bawah angka ini (mis. level margin call/stop out broker). Cek aturan broker Anda.</span>
+    </div>
+
+    <div class="field">
+      <label for="maxLevel">Hitung Sampai Posisi Ke-</label>
+      <input type="number" id="maxLevel" value="10" step="1" min="1" max="60">
+    </div>
+  </section>
+
+  <section>
+    <div class="summary" id="summary"></div>
+
+    <div class="table-wrap">
+      <div class="panel-pad">
+        <h2 style="margin:0 0 4px;text-transform:uppercase;letter-spacing:.06em;font-size:.78rem;color:var(--muted);">Rincian per Level</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Lot</th>
+            <th>Lot Kumulatif</th>
+            <th>Jarak dari Anchor (pips)</th>
+            <th>Harga Entry</th>
+            <th>Harga Rata-rata</th>
+            <th>Floating Loss di Level Ini</th>
+            <th>Margin Terpakai</th>
+            <th>Modal Minimum</th>
+            <th>Harga TP</th>
+            <th>Estimasi Profit jika TP</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="install-tip" id="installTip">
+      Anda bisa menambahkan kalkulator ini ke layar utama HP agar bisa dibuka seperti aplikasi.
+      <br>
+      <button id="installBtn">Tambahkan ke Layar Utama</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Perhitungan ini adalah simulasi teoretis berdasarkan logika lot dan jarak level pada skrip EA (lot = Lot Awal × Pengali^(level-1), jarak antar level tetap dalam pips, TP dari harga rata-rata). Belum memperhitungkan spread, swap, komisi, slippage, batas volume broker, dan margin call. Gunakan hanya sebagai gambaran, bukan jaminan hasil trading.
+</footer>
 
 <script>
-const $=id=>document.getElementById(id);
-const IDS=['x','lot0','mult','grp','maxlot','step','tp','dir','vstep','price','bal','lev','so'];
-const CONTRACT=100; // 1 lot XAUUSD = 100 oz
-const fmt=(n,d=2)=>n.toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
-const num=(id,def=0)=>{const v=parseFloat($(id).value);return isFinite(v)?v:def};
-
-// Meniru BuildLotSequence() & GetLotSize() pada EA
-function lotSeq(lot0,mult,vs){
-  mult=Math.max(mult,1.01);
-  const r=v=>Math.round(v/vs)*vs, first=r(lot0), seq=[first];
-  let raw=lot0;
-  for(let k=0;k<2000&&seq.length<150;k++){
-    const v=r(raw);
-    if(v>seq[seq.length-1]+vs/2)seq.push(v);
-    raw*=mult;
-  }
-  return seq;
-}
-function calc(p,x){
-  const seq=lotSeq(p.lot0,p.mult,p.vs);
-  const lotAt=i=>{
-    let g=Math.min(Math.floor((i-1)/p.grp),seq.length-1),l=seq[g];
-    if(p.maxlot>0&&l>p.maxlot)l=p.maxlot;
-    return Math.max(+(Math.round(l/p.vs)*p.vs).toFixed(2),0.01);
+(function(){
+  const els = {
+    initialLot: document.getElementById('initialLot'),
+    enableMultiplier: document.getElementById('enableMultiplier'),
+    lotMultiplier: document.getElementById('lotMultiplier'),
+    maxLotLimit: document.getElementById('maxLotLimit'),
+    direction: document.getElementById('direction'),
+    anchorPrice: document.getElementById('anchorPrice'),
+    pipSize: document.getElementById('pipSize'),
+    stepPips: document.getElementById('stepPips'),
+    tpPips: document.getElementById('tpPips'),
+    pipValue: document.getElementById('pipValue'),
+    leverage: document.getElementById('leverage'),
+    contractSize: document.getElementById('contractSize'),
+    marginLevelMin: document.getElementById('marginLevelMin'),
+    maxLevel: document.getElementById('maxLevel'),
   };
-  const pv=CONTRACT*p.pipsize*p.acc; // nilai 1 pip per 1 lot
-  let sumL=0,sumLd=0,ddLot=0;
-  const out=[];
-  for(let i=1;i<=x;i++){
-    const L=lotAt(i),d=(i-1)*p.step;
-    sumL+=L;sumLd+=L*d;
-    const P=d; // harga posisi i berada di offset d dari anchor
-    ddLot=P*sumL-sumLd; // sum L_j*(P-d_j)
-    out.push({i,L,sumL,dd:ddLot*pv,avg:sumLd/sumL,P});
+  const rowsEl = document.getElementById('rows');
+  const summaryEl = document.getElementById('summary');
+
+  function fmtUsd(n){
+    const sign = n < 0 ? '-' : '';
+    return sign + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
   }
-  const tpE=n=>p.tp;
-  const last=out[x-1],profit=last.sumL*tpE(x)*pv;
-  return {seq,lotAt,pv,out,last,profit,tpE,rebound:(last.P-last.avg)+tpE(x)};
-}
-function read(){
-  return {lot0:num('lot0',.01),mult:num('mult',1.2),grp:Math.max(1,Math.floor(num('grp',30))),maxlot:num('maxlot'),
-    step:num('step',30),tp:num('tp',100),pipsize:0.01,acc:1,vs:num('vstep',.01)||.01};
-}
-function render(){
-  const p=read(),x=Math.min(4500,Math.max(1,Math.floor(num('x',1))));
-  const cur='USC',buy=$('dir').value==='buy',sgn=buy?-1:1;
-  const R=calc(p,x),L=R.last;
-  $('xl').textContent=x;
-  $('r-dd').textContent='-'+fmt(L.dd)+' '+cur;
-  $('r-pf').textContent='+'+fmt(R.profit)+' '+cur;
-  const rows=[
-    ['Total lot terbuka',fmt(L.sumL)+' lot'],
-    ['Lot posisi terakhir (ke-'+x+')',fmt(R.lotAt(x))+' lot'],
-    ['Jarak dari posisi pertama',fmt(L.P,0)+' pips ('+fmt(L.P*p.pipsize)+' harga)'],
-    ['Average price (dari anchor)',fmt(L.avg,1)+' pips ('+fmt(L.avg*p.pipsize)+' harga)'],
-    ['Rebound dibutuhkan ke TP',fmt(R.rebound,1)+' pips ('+fmt(R.rebound*p.pipsize)+' harga)'],
-    ['Profit : Drawdown',L.dd>0?'1 : '+fmt(L.dd/R.profit):'-']
-  ];
-  const ddN=L.dd+L.sumL*p.step*R.pv;
-  rows.splice(0,0,['Drawdown terdalam sebelum posisi ke-'+(x+1)+' terbuka','<span class="warn">-'+fmt(ddN)+' '+cur+'</span>'],
-    ['Rebound ke TP dari titik itu',fmt(R.rebound+p.step,1)+' pips']);
-  const price=num('price',NaN);
-  if(isFinite(price)&&price>0){
-    const px=price+sgn*L.P*p.pipsize,avgP=price+sgn*L.avg*p.pipsize,tpP=avgP-sgn*R.tpE(x)*p.pipsize;
-    rows.push(['Harga saat posisi ke-'+x+' terisi',fmt(px)],['Harga sesaat sebelum posisi ke-'+(x+1),fmt(px+sgn*p.step*p.pipsize)],['Average price',fmt(avgP)],['Harga TP basket',fmt(tpP)]);
-    const lev=num('lev',0),bal=num('bal',NaN);
-    if(lev>0){
-      const m=L.sumL*CONTRACT*px/lev*p.acc;
-      rows.push(['Margin terpakai',fmt(m)+' '+cur]);
-      if(isFinite(bal)&&bal>0){
-        const eq=bal-L.dd,ml=eq/m*100,so=num('so',50);
-        rows.push(['Equity saat itu',fmt(eq)+' '+cur],['Margin level',(ml<so?'<span class="warn">':'<span>')+fmt(ml)+'%</span>'],
-          ['Drawdown % balance',fmt(L.dd/bal*100)+'%']);
-        if(ml<so)rows.push(['Status','<span class="warn">Di bawah stop out!</span>']);
+  function fmtLot(n){
+    return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function countDecimals(rawStr){
+    if(!rawStr || rawStr.indexOf('.') === -1) return 0;
+    return rawStr.split('.')[1].length;
+  }
+  function fmtPrice(n, decimals){
+    if(!isFinite(n)) return '—';
+    return n.toLocaleString('en-US', {minimumFractionDigits:decimals, maximumFractionDigits:decimals});
+  }
+
+  function compute(){
+    const initialLot = parseFloat(els.initialLot.value) || 0;
+    const enableMult = els.enableMultiplier.checked;
+    const mult = Math.max(parseFloat(els.lotMultiplier.value) || 1, 0.01);
+    const maxLot = parseFloat(els.maxLotLimit.value) || 0;
+    const stepPips = parseFloat(els.stepPips.value) || 0;
+    const tpPips = parseFloat(els.tpPips.value) || 0;
+    const pipValue = parseFloat(els.pipValue.value) || 0;
+    const maxLevel = Math.min(Math.max(parseInt(els.maxLevel.value) || 1, 1), 200);
+    const leverage = Math.max(parseFloat(els.leverage.value) || 1, 1);
+    const contractSize = parseFloat(els.contractSize.value) || 0;
+    const marginLevelMin = Math.max(parseFloat(els.marginLevelMin.value) || 0, 0);
+
+    const direction = els.direction.value; // 'buy' or 'sell'
+    const anchorRaw = els.anchorPrice.value;
+    const anchorPrice = parseFloat(anchorRaw);
+    const hasAnchor = anchorRaw !== '' && isFinite(anchorPrice);
+    const pipSizeRaw = els.pipSize.value;
+    const pipSize = parseFloat(pipSizeRaw) || 0.01;
+    const priceDecimals = Math.max(countDecimals(anchorRaw), countDecimals(pipSizeRaw), 2);
+    const sign = direction === 'sell' ? 1 : -1; // buy: harga bergerak turun; sell: harga bergerak naik
+
+    let lots = [];
+    let cumLot = 0;
+    let weightedDistSum = 0;
+    let cumMargin = 0;
+    let rowsHtml = '';
+    let finalFloatLoss = 0;
+    let finalProfit = 0;
+    let finalCumLot = 0;
+    let finalAvgPrice = null;
+    let finalTpPrice = null;
+    let finalEntryPrice = null;
+    let finalMargin = null;
+    let finalCapital = null;
+
+    for(let level = 1; level <= maxLevel; level++){
+      let lot = initialLot;
+      if(enableMult && level > 1){
+        lot = initialLot * Math.pow(mult, level - 1);
       }
+      if(maxLot > 0 && lot > maxLot) lot = maxLot;
+      lots.push(lot);
+      cumLot += lot;
+
+      const distance = (level - 1) * stepPips;
+      weightedDistSum += distance * lot;
+      const avgDistance = cumLot > 0 ? weightedDistSum / cumLot : 0;
+
+      const entryPrice = hasAnchor ? anchorPrice + sign * distance * pipSize : null;
+      const avgPrice = hasAnchor ? anchorPrice + sign * avgDistance * pipSize : null;
+      const tpPrice = hasAnchor ? avgPrice - sign * tpPips * pipSize : null;
+
+      // floating loss if price has just reached this level's entry
+      let floatLoss = 0;
+      for(let j = 0; j < level; j++){
+        const distJ = (level - 1 - j) * stepPips;
+        floatLoss += distJ * lots[j] * pipValue;
+      }
+
+      const profit = tpPips * cumLot * pipValue;
+
+      // margin posisi ini dihitung dari harga entry level tersebut
+      let margin = null, capital = null;
+      if(hasAnchor){
+        cumMargin += lot * contractSize * entryPrice / leverage;
+        margin = cumMargin;
+        capital = floatLoss + (marginLevelMin / 100) * cumMargin;
+      }
+
+      if(level === maxLevel){
+        finalMargin = margin;
+        finalCapital = capital;
+        finalFloatLoss = floatLoss;
+        finalProfit = profit;
+        finalCumLot = cumLot;
+        finalAvgPrice = avgPrice;
+        finalTpPrice = tpPrice;
+        finalEntryPrice = entryPrice;
+      }
+
+      rowsHtml += `<tr>
+        <td>${level}</td>
+        <td>${fmtLot(lot)}</td>
+        <td>${fmtLot(cumLot)}</td>
+        <td>${distance.toLocaleString('en-US')}</td>
+        <td>${hasAnchor ? fmtPrice(entryPrice, priceDecimals) : '—'}</td>
+        <td>${hasAnchor ? fmtPrice(avgPrice, priceDecimals) : '—'}</td>
+        <td class="red">${fmtUsd(-floatLoss)}</td>
+        <td>${hasAnchor ? fmtUsd(margin) : '—'}</td>
+        <td class="amber">${hasAnchor ? fmtUsd(capital) : '—'}</td>
+        <td>${hasAnchor ? fmtPrice(tpPrice, priceDecimals) : '—'}</td>
+        <td class="green">${fmtUsd(profit)}</td>
+      </tr>`;
     }
+
+    rowsEl.innerHTML = rowsHtml;
+
+    summaryEl.innerHTML = `
+      <div class="stat">
+        <div class="k">Lot Kumulatif di Posisi ${maxLevel}</div>
+        <div class="v">${fmtLot(finalCumLot)}</div>
+        <div class="sub">${hasAnchor ? 'Harga rata-rata: ' + fmtPrice(finalAvgPrice, priceDecimals) : 'Isi harga perolehan posisi 1 untuk lihat harga rata-rata'}</div>
+      </div>
+      <div class="stat">
+        <div class="k">Floating Loss (Drawdown)</div>
+        <div class="v red">${fmtUsd(-finalFloatLoss)}</div>
+        <div class="sub">${hasAnchor ? 'Harga di level ' + maxLevel + ': ' + fmtPrice(finalEntryPrice, priceDecimals) : 'Jika harga tepat di level ' + maxLevel}</div>
+      </div>
+      <div class="stat">
+        <div class="k">Estimasi Profit jika TP</div>
+        <div class="v green">${fmtUsd(finalProfit)}</div>
+        <div class="sub">${hasAnchor ? 'Harga TP: ' + fmtPrice(finalTpPrice, priceDecimals) : 'TP ' + tpPips + ' pips dari rata-rata'}</div>
+      </div>
+      <div class="stat">
+        <div class="k">Modal Minimum di Posisi ${maxLevel}</div>
+        <div class="v amber">${hasAnchor ? fmtUsd(finalCapital) : '—'}</div>
+        <div class="sub">${hasAnchor ? 'Margin terpakai ' + fmtUsd(finalMargin) + ' + floating loss, leverage 1:' + leverage : 'Isi harga perolehan posisi 1 untuk hitung margin'}</div>
+      </div>
+    `;
+
+    saveState();
   }
-  $('rows').innerHTML=rows.map(r=>'<div><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div>').join('');
-  // breakdown per grup (accordion)
-  const hasP=isFinite(price)&&price>0,ng=Math.ceil(x/p.grp);
-  let h='';
-  for(let k=0;k<ng;k++){
-    const a=k*p.grp+1,e=Math.min(x,(k+1)*p.grp),eo=R.out[e-1],isCur=x>=a&&x<=e;
-    h+='<details'+(isCur?' open':'')+'><summary><b>Grup '+(k+1)+'</b><span>Posisi '+a+'–'+e+'</span><span>'+fmt(R.lotAt(a))+' lot/posisi</span><span>DD akhir grup: <em>-'+fmt(eo.dd)+'</em></span></summary><div class="scroll"><table><tr><th>Posisi</th><th>Lot</th><th>Jarak (pips)</th>'+(hasP?'<th>Harga</th>':'')+'<th>Total lot</th><th>Drawdown</th><th>Profit TP</th></tr>';
-    for(let i=a;i<=e;i++){
-      const o=R.out[i-1];
-      h+='<tr'+(i===x?' class="cur"':'')+'><td>'+i+'</td><td>'+fmt(o.L)+'</td><td>'+fmt(o.P,0)+'</td>'+(hasP?'<td>'+fmt(price+sgn*o.P*p.pipsize)+'</td>':'')+'<td>'+fmt(o.sumL)+'</td><td>-'+fmt(o.dd)+'</td><td>+'+fmt(o.sumL*R.tpE(i)*R.pv)+'</td></tr>';
-    }
-    h+='</table></div></details>';
+
+  function saveState(){
+    try{
+      const state = {};
+      Object.keys(els).forEach(k => {
+        state[k] = els[k].type === 'checkbox' ? els[k].checked : els[k].value;
+      });
+      localStorage.setItem('babi-ngepet-calc-state', JSON.stringify(state));
+    }catch(e){}
   }
-  $('bd').innerHTML=h;
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem('babi-ngepet-calc-state');
+      if(!raw) return;
+      const state = JSON.parse(raw);
+      Object.keys(els).forEach(k => {
+        if(state[k] === undefined) return;
+        if(els[k].type === 'checkbox') els[k].checked = state[k];
+        else els[k].value = state[k];
+      });
+    }catch(e){}
+  }
+
+  Object.values(els).forEach(el => {
+    el.addEventListener('input', compute);
+    el.addEventListener('change', compute);
+  });
+  loadState();
+  compute();
+
+  // PWA install prompt
+  let deferredPrompt = null;
+  const installTip = document.getElementById('installTip');
+  const installBtn = document.getElementById('installBtn');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installTip.classList.add('show');
+  });
+  installBtn.addEventListener('click', async () => {
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installTip.classList.remove('show');
+  });
+  window.addEventListener('appinstalled', () => {
+    installTip.classList.remove('show');
+  });
+})();
+
+// Service worker: registrasi + auto-reload saat versi baru aktif
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js');
+  });
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if(refreshing) return;
+    refreshing = true;
+    window.location.reload();
+  });
 }
-// simpan input
-try{const s=JSON.parse(localStorage.getItem('xaudd')||'{}');IDS.forEach(k=>{if(s[k]!==undefined)$(k).value=s[k]})}catch(e){}
-IDS.forEach(k=>$(k).addEventListener('input',()=>{
-  try{const s={};IDS.forEach(i=>s[i]=$(i).value);localStorage.setItem('xaudd',JSON.stringify(s))}catch(e){}
-  render();
-}));
-render();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>
 </body>
 </html>

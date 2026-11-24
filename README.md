@@ -1,21 +1,83 @@
-# Babi Ngepet
+# Calculator Babi Ngepet V1
 
-Kalkulator untuk menghitung **drawdown floating di posisi ke-x** dan **profit bila TP basket** pada strategi averaging XAUUSD (logika mengikuti EA Babi Ngepet).
+Kalkulator statis (HTML/CSS/JS, tanpa backend) untuk menghitung **lot**,
+**floating loss (drawdown)**, dan **estimasi profit** sampai posisi ke-x,
+mengikuti logika EA:
 
-- 1 pip XAUUSD = 0,01 harga (sesuai EA)
-- 1 lot = 100 oz, jadi 1 pip per 1 lot = 1 USD
-- Nilai ditampilkan dalam USC (hitungan 1 pip per 1 lot = 1)
-- Opsional: harga entry, balance, leverage → margin, margin level, harga TP
-- PWA: bisa di-install / "Add to Home Screen" di HP, jalan offline
+- Lot level ke-n = `Lot Awal × Pengali^(n-1)` (dibatasi oleh Batas Maksimal Lot bila diisi)
+- Jarak antar level tetap dalam pips (`AddPositionPips`)
+- Take Profit dihitung dari harga rata-rata (pips)
+- Harga rata-rata dan harga TP dihitung berdasarkan harga perolehan posisi
+  pertama, arah posisi (Buy/Sell), dan ukuran 1 pip yang Anda isi sendiri
+- Margin terpakai = jumlah `Lot × Ukuran Kontrak × Harga Entry ÷ Leverage` dari
+  semua posisi yang terbuka sampai level tersebut (butuh harga perolehan posisi pertama)
+- Modal minimum = floating loss + (Batas Margin Level % × margin terpakai),
+  yaitu perkiraan saldo yang dibutuhkan agar akun bertahan sampai posisi ke-x
 
-## Deploy ke GitHub Pages
-1. Upload semua isi folder ini ke repository (index.html harus di root).
-2. Settings → Pages → Source: *Deploy from a branch* → `main` / `(root)`.
-3. Buka `https://USERNAME.github.io/NAMA-REPO/`.
+Tidak ada kurva/grafik, hanya tabel angka per level sesuai permintaan.
 
-## Pasang shortcut di HP
-- **Android (Chrome):** menu ⋮ → *Install app* / *Add to Home screen*
-- **iPhone (Safari):** Share → *Add to Home Screen*
+## Isi folder
+
+```
+index.html      -> halaman kalkulator
+manifest.json   -> agar bisa dipasang sebagai app/shortcut di HP (PWA)
+sw.js           -> service worker, auto-update saat kode di GitHub berubah
+icons/          -> ikon untuk shortcut layar utama
+```
+
+## Cara upload ke GitHub Pages
+
+1. Buat repository baru di GitHub, misalnya `babi-ngepet-calculator`.
+2. Upload semua isi folder ini (`index.html`, `manifest.json`, `sw.js`, folder `icons/`) ke root repository tersebut.
+3. Buka **Settings → Pages** di repository.
+4. Pada **Source**, pilih branch `main` dan folder `/ (root)`, lalu **Save**.
+5. Tunggu 1–2 menit, GitHub akan memberi URL seperti:
+   `https://<username>.github.io/babi-ngepet-calculator/`
+
+Setiap kali Anda mengubah `index.html` (atau file lain) dan push ke GitHub,
+halaman akan otomatis memakai versi terbaru saat dibuka kembali secara
+online — tidak perlu menaikkan versi cache manual, karena service worker
+memakai strategi *network-first* (selalu ambil dari internet dulu, cache
+hanya cadangan saat offline).
+
+## Cara menambahkan shortcut di HP
+
+**Android (Chrome):**
+1. Buka URL GitHub Pages di atas.
+2. Ketuk menu titik tiga → **Tambahkan ke layar Utama** / **Instal aplikasi**.
+   (Atau akan muncul tombol "Tambahkan ke Layar Utama" otomatis di halaman.)
+
+**iPhone (Safari):**
+1. Buka URL di Safari.
+2. Ketuk tombol **Share/Bagikan** → **Tambah ke Layar Utama**.
+
+Ikon kalkulator akan muncul di layar utama HP seperti aplikasi biasa, dan
+terbuka tanpa address bar browser.
+
+## Jika ikon shortcut tetap tidak muncul
+
+1. Pastikan folder `icons/` beserta semua file di dalamnya (huruf besar/kecil
+   harus persis sama) ikut ter-upload ke GitHub — cek langsung dengan membuka
+   `https://<username>.github.io/<repo>/icons/icon-192.png` di browser HP;
+   kalau muncul gambar ikon, filenya sudah benar.
+   (Logo di halaman dan favicon tab browser sudah ditanam langsung di dalam
+   `index.html`, jadi keduanya tidak lagi bergantung pada folder `icons/` —
+   hanya ikon shortcut Android/manifest dan `apple-touch-icon` iOS yang masih
+   memakai file di folder tersebut.)
+2. Di HP, hapus dulu shortcut lama yang sudah kadung dibuat, lalu di Chrome
+   buka **Settings → Site settings/Storage → cari domain github.io →
+   Clear & reset** (atau hapus data situs) supaya service worker & cache
+   lama yang mungkin sempat gagal ter-hapus bersih.
+3. Buka lagi URL-nya, tunggu halaman termuat penuh (biarkan beberapa detik
+   agar service worker & manifest selesai diproses), baru lakukan
+   **Tambahkan ke Layar Utama**.
+4. Di iPhone, ikon shortcut memakai `apple-touch-icon`, bukan `manifest.json`
+   — pastikan `icons/icon-180.png` juga ikut ter-upload.
 
 ## Catatan
-Hasil adalah estimasi: tidak memperhitungkan spread, swap, komisi, dan slippage.
+
+Nilai "Nilai per Pip untuk 1.0 Lot (USD)" harus disesuaikan sendiri dengan
+spesifikasi kontrak instrumen/broker Anda — ini tidak bisa dipukul rata
+untuk semua pair. Perhitungan di kalkulator ini murni simulasi teoretis
+berdasarkan logika lot & jarak level EA; belum memperhitungkan spread,
+swap, komisi, slippage, batas volume broker, atau margin call.
